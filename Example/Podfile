@@ -1,0 +1,8 @@
+use_frameworks!
+
+platform :ios, '13.0'
+
+target 'Example' do
+  pod 'AutomaticSettings', :path => '../'
+  pod 'Sourcery'
+end

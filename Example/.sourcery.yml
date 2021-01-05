@@ -1,0 +1,14 @@
+sources:
+  include:
+    - Example
+    - ../Sources/AutomaticSettings/AutomaticSettingsProtocols.swift
+templates:
+  - ../Stencil/AutomaticSettings.stencil
+output:
+  Example/CodeGen/
+args:
+  settingsView: SettingsView
+  settingsStructure: Settings
+  settingsExternalData: SettingsExternal
+  settingsImports:
+    - UIKit

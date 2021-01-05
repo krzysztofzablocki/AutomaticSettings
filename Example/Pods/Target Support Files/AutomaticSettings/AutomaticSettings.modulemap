@@ -1,0 +1,6 @@
+framework module AutomaticSettings {
+  umbrella header "AutomaticSettings-umbrella.h"
+
+  export *
+  module * { export * }
+}

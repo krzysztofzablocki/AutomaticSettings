@@ -1,0 +1,23 @@
+PODS:
+  - AutomaticSettings (1.0.0)
+  - Sourcery (1.0.2)
+
+DEPENDENCIES:
+  - AutomaticSettings (from `../`)
+  - Sourcery
+
+SPEC REPOS:
+  trunk:
+    - Sourcery
+
+EXTERNAL SOURCES:
+  AutomaticSettings:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  AutomaticSettings: 1c86a8322d122e62491f3a28d09d364dd04d87eb
+  Sourcery: e8951e8759ef6a3a0cce412db64832dd23343041
+
+PODFILE CHECKSUM: 4644d9900f7ecdca9345155387baea8d0ad320a3
+
+COCOAPODS: 1.10.0

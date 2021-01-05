@@ -1,0 +1,187 @@
+import SwiftUI
+import AutomaticSettings
+
+{% for import in argument.settingsImports %}
+import {{import}}
+{% endfor %}
+
+{% macro generateKeyPath type %}{% if type.parent and type.parent.localName != argument.settingsStructure %}{% call generateKeyPath type.parent %}{% endif %}{% if type.parent %}.{{type.localName|lowerFirstLetter}}{% endif %}{% endmacro %}
+
+{% macro generateSettings type %}
+      {% for variable in type.variables|!annotated:"skipSetting" where variable.isMutable %}
+      {% if forloop.counter0 == 0 %} 
+       Group { {% endif %}
+      {% if forloop.counter0 == 9 %} } 
+       Group { {% endif %}
+      {% if forloop.counter0 == 19 %} } 
+       Group { {% endif %}
+      {% if forloop.counter0 == 29 %} } 
+       Group { {% endif %}
+      {% if forloop.counter0 == 39 %} } 
+       Group { {% endif %}
+       {% if variable.type.implements.AutomaticSettings %}
+        Section(header: Text("{{variable.type.localName}}".settings_titleCase)) {
+          {{variable.type.localName}}View(
+            viewModel: self.viewModel{% if variable.type.annotations.injectFooter or variable.type.annotations.injectHeader %},{% endif%}
+            {% if variable.type.annotations.injectHeader %}headerView: {{variable.type.localName|lowerFirstLetter}}SectionHeader() {% if variable.type.annotations.injectFooter %},{% endif%}{% endif %}
+            {% if variable.type.annotations.injectFooter %}footerView: {{variable.type.localName|lowerFirstLetter}}SectionFooter() {% endif %}
+          )
+        }
+       {% else %}
+        setting(
+          "{{ variable.name }}", 
+          keyPath: \{% call generateKeyPath type %}.{{variable.name}}, 
+          requiresRestart: {% if variable.annotations.requiresRestart %}true{% else %}false{% endif %},
+          sideEffect: {% if variable.annotations.sideEffect %} { {{variable.annotations.sideEffect }} } {% else %}nil{% endif %}, 
+          uniqueIdentifier: "\\{% call generateKeyPath type %}.{{variable.name}}"{% if variable.annotations.range and variable.type.name == "Float" %},
+          range: {{ variable.annotations.range }}
+        ) {% else %}
+        ) {% endif %}
+        {% endif %}
+      {% if forloop.last %} } {% endif %}
+      {% endfor %}
+{% endmacro %}
+
+extension {{ argument.settingsView }} {
+
+// MARK: - Views
+
+{% for type in types.implementing.AutomaticSettings where type.localName != argument.settingsStructure %}
+struct {{type.localName}}View<HeaderView: View, FooterView: View>: View, AutomaticSettingsViewDSL {
+  typealias ViewModel = AutomaticSettingsViewModel<{{ argument.settingsStructure }}, {{ argument.settingsExternalData }}>
+
+  @ObservedObject
+  var viewModel: ViewModel
+
+  var headerView: HeaderView
+  var footerView: FooterView
+
+  init(viewModel: ViewModel, headerView: HeaderView, footerView: FooterView) {
+    self.viewModel = viewModel
+    self.headerView = headerView
+    self.footerView = footerView
+  }
+
+  init(viewModel: ViewModel) where HeaderView == EmptyView, FooterView == EmptyView {
+    self.viewModel = viewModel
+    self.headerView = EmptyView()
+    self.footerView = EmptyView()
+  }
+
+  init(viewModel: ViewModel, headerView: HeaderView) where FooterView == EmptyView {
+    self.viewModel = viewModel
+    self.headerView = headerView
+    self.footerView = EmptyView()
+  }
+
+  init(viewModel: ViewModel, footerView: FooterView) where HeaderView == EmptyView {
+    self.viewModel = viewModel
+    self.headerView = EmptyView()
+    self.footerView = footerView
+  }
+
+  var body: some View {
+    Group {
+      headerView
+      settings()
+      footerView
+    }
+  }
+
+
+  /// `Group` containing all {{type.localName|upperFirstLetter}} views
+  func settings() -> some View {
+    Group {
+    {% call generateSettings type %}
+    }
+  }
+
+}
+
+{% endfor %}
+
+// MARK: -
+
+/// All generated section links:
+{% for type in types.implementing.AutomaticSettings where type.parent.localName == argument.settingsStructure %}
+    {% if forloop.counter0 == 0 %} 
+    // Group { {% endif %}
+    {% if forloop.counter0 == 9 %}// } 
+    // Group { {% endif %}
+    {% if forloop.counter0 == 19 %}// } 
+    // Group { {% endif %}
+    {% if forloop.counter0 == 29 %}// } 
+    // Group { {% endif %}
+    {% if forloop.counter0 == 39 %}// } 
+    // Group { {% endif %}
+      // {{type.localName|lowerFirstLetter}}Link()
+    {% if forloop.last %}// } {% endif %}
+{% endfor %}
+
+// MARK: - Top Level Link wrappers
+
+{% for type in types.implementing.AutomaticSettings where type.parent.localName == argument.settingsStructure %}
+
+{% if type.annotations.injectFooter or type.annotations.injectHeader %}
+  func {{type.localName|lowerFirstLetter}}Link(
+    label: String = "{{type.localName|upperFirstLetter}}"
+  ) -> some View {
+    NavigationLink(
+      label.settings_titleCase, 
+      destination: 
+        Form {
+          {{type.localName}}View(
+            viewModel: self.viewModel{% if type.annotations.injectFooter or type.annotations.injectHeader %},{% endif%}
+            {% if type.annotations.injectHeader %} headerView: {{type.parent.localName}}View.{{type.localName|lowerFirstLetter}}SectionHeader(self)() {% if type.annotations.injectFooter %},{% endif%}{% endif %}
+            {% if type.annotations.injectFooter %} footerView: {{type.parent.localName}}View.{{type.localName|lowerFirstLetter}}SectionFooter(self)() {% endif %}
+          )
+        }
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+      )
+  }
+{% else %}
+  func {{type.localName|lowerFirstLetter}}Link<HeaderView: View, FooterView: View>(
+    label: String = "{{type.localName|upperFirstLetter}}", 
+    @ViewBuilder headerView: () -> HeaderView,
+    @ViewBuilder footerView: () -> FooterView
+  ) -> some View {
+    NavigationLink(
+      label.settings_titleCase, 
+      destination: 
+        Form {
+          {{type.localName}}View(viewModel: viewModel, headerView: headerView(), footerView: footerView())
+        }
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+      )
+  }
+
+  func {{type.localName|lowerFirstLetter}}Link<HeaderView: View>(
+    label: String = "{{type.localName|upperFirstLetter}}", 
+    @ViewBuilder headerView: () -> HeaderView
+  ) -> some View {
+    NavigationLink(
+      label.settings_titleCase, 
+      destination: 
+        Form {
+          {{type.localName}}View(viewModel: viewModel, headerView: headerView())
+        }
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+      )
+  }
+
+  func {{type.localName|lowerFirstLetter}}Link<FooterView: View>(
+    label: String = "{{type.localName|upperFirstLetter}}", 
+    @ViewBuilder footerView: () -> FooterView
+  ) -> some View {
+    NavigationLink(
+      label.settings_titleCase, 
+      destination: 
+        Form {
+          {{type.localName}}View(viewModel: viewModel, footerView: footerView())
+        }
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+      )
+  }
+{% endif %}
+{% endfor %}
+}
