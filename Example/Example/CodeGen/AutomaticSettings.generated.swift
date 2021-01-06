@@ -122,6 +122,13 @@ struct CalculationView<HeaderView: View, FooterView: View>: View, AutomaticSetti
           sideEffect: nil, 
           uniqueIdentifier: "\\.calculation.text"
         ) 
+        setting(
+          "mode", 
+          keyPath: \.calculation.mode, 
+          requiresRestart: false,
+          sideEffect: nil, 
+          uniqueIdentifier: "\\.calculation.mode"
+        ) 
        } 
     }
   }
