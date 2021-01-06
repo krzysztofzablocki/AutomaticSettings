@@ -12,68 +12,6 @@ extension SettingsView {
 
 // MARK: - Views
 
-struct SettingsView<HeaderView: View, FooterView: View>: View, AutomaticSettingsViewDSL {
-  typealias ViewModel = AutomaticSettingsViewModel<Settings, SettingsExternal>
-
-  @ObservedObject
-  var viewModel: ViewModel
-
-  var headerView: HeaderView
-  var footerView: FooterView
-
-  init(viewModel: ViewModel, headerView: HeaderView, footerView: FooterView) {
-    self.viewModel = viewModel
-    self.headerView = headerView
-    self.footerView = footerView
-  }
-
-  init(viewModel: ViewModel) where HeaderView == EmptyView, FooterView == EmptyView {
-    self.viewModel = viewModel
-    self.headerView = EmptyView()
-    self.footerView = EmptyView()
-  }
-
-  init(viewModel: ViewModel, headerView: HeaderView) where FooterView == EmptyView {
-    self.viewModel = viewModel
-    self.headerView = headerView
-    self.footerView = EmptyView()
-  }
-
-  init(viewModel: ViewModel, footerView: FooterView) where HeaderView == EmptyView {
-    self.viewModel = viewModel
-    self.headerView = EmptyView()
-    self.footerView = footerView
-  }
-
-  var body: some View {
-    Group {
-      headerView
-      settings()
-      footerView
-    }
-  }
-
-
-  /// `Group` containing all Settings views
-  func settings() -> some View {
-    Group {
-       Group { 
-        Section(header: Text("Calculation".settings_titleCase)) {
-          CalculationView(
-            viewModel: self.viewModel
-          )
-        }
-        Section(header: Text("Smoothing".settings_titleCase)) {
-          SmoothingView(
-            viewModel: self.viewModel
-          )
-        }
-       } 
-    }
-  }
-
-}
-
 struct CalculationView<HeaderView: View, FooterView: View>: View, AutomaticSettingsViewDSL {
   typealias ViewModel = AutomaticSettingsViewModel<Settings, SettingsExternal>
 
@@ -333,64 +271,6 @@ struct GroupedView<HeaderView: View, FooterView: View>: View, AutomaticSettingsV
       )
   }
 
-  func calculationLink(
-    label: String = "Calculation"
-  ) -> some View {
-    NavigationLink(
-      label.settings_titleCase, 
-      destination: 
-        Form {
-          CalculationView(
-            viewModel: self.viewModel
-          )
-        }
-        .navigationBarTitle("Calculation".settings_titleCase)
-      )
-  }
-
-  func smoothingLink<HeaderView: View, FooterView: View>(
-    label: String = "Smoothing", 
-    @ViewBuilder headerView: () -> HeaderView,
-    @ViewBuilder footerView: () -> FooterView
-  ) -> some View {
-    NavigationLink(
-      label.settings_titleCase, 
-      destination: 
-        Form {
-          SmoothingView(viewModel: viewModel, headerView: headerView(), footerView: footerView())
-        }
-        .navigationBarTitle("Smoothing".settings_titleCase)
-      )
-  }
-
-  func smoothingLink<HeaderView: View>(
-    label: String = "Smoothing", 
-    @ViewBuilder headerView: () -> HeaderView
-  ) -> some View {
-    NavigationLink(
-      label.settings_titleCase, 
-      destination: 
-        Form {
-          SmoothingView(viewModel: viewModel, headerView: headerView())
-        }
-        .navigationBarTitle("Smoothing".settings_titleCase)
-      )
-  }
-
-  func smoothingLink<FooterView: View>(
-    label: String = "Smoothing", 
-    @ViewBuilder footerView: () -> FooterView
-  ) -> some View {
-    NavigationLink(
-      label.settings_titleCase, 
-      destination: 
-        Form {
-          SmoothingView(viewModel: viewModel, footerView: footerView())
-        }
-        .navigationBarTitle("Smoothing".settings_titleCase)
-      )
-  }
-
   func smoothingLink(
     label: String = "Smoothing"
   ) -> some View {
@@ -399,7 +279,8 @@ struct GroupedView<HeaderView: View, FooterView: View>: View, AutomaticSettingsV
       destination: 
         Form {
           SmoothingView(
-            viewModel: self.viewModel
+            viewModel: self.viewModel,
+             footerView: SettingsView.smoothingSectionFooter(self)() 
           )
         }
         .navigationBarTitle("Smoothing".settings_titleCase)

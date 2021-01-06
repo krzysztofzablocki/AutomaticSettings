@@ -17,6 +17,7 @@ struct Settings: AutomaticSettings {
         var mode = Mode.linearRegression
     }
 
+    // sourcery: injectFooter
     struct Smoothing: AutomaticSettings {
         var dayPeriod = 7
         var algorithm = Algorithm.movingAverage
