@@ -20,6 +20,15 @@ struct Settings: AutomaticSettings {
     struct Smoothing: AutomaticSettings {
         var dayPeriod = 7
         var algorithm = Algorithm.movingAverage
+
+        struct Grouped: AutomaticSettings {
+            // sourcery: range = 1...4
+            var level: Float = 1
+
+            var prettyCool = true
+        }
+
+        var grouped: Grouped = .init()
     }
 
     var calculation: Calculation = .init()
