@@ -182,6 +182,19 @@ struct {{type.localName}}View<HeaderView: View, FooterView: View>: View, Automat
         .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
       )
   }
+  
+  func {{type.localName|lowerFirstLetter}}Link(
+    label: String = "{{type.localName|upperFirstLetter}}"
+  ) -> some View {
+    NavigationLink(
+      label.settings_titleCase,
+      destination:
+        Form {
+          {{type.localName}}View(viewModel: self.viewModel)
+        }
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+      )
+  }
 {% endif %}
 {% endfor %}
 }
