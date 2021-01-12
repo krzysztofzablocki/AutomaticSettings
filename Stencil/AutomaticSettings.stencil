@@ -91,7 +91,7 @@ struct {{type.localName}}View<HeaderView: View, FooterView: View>: View, Automat
 
   /// `Group` containing all {{type.localName|upperFirstLetter}} views
   func settings() -> some View {
-    Group {
+    Section {
     {% call generateSettings type %}
     }
   }
