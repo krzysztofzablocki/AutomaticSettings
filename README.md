@@ -1,6 +1,33 @@
 ## Data driven settings screens
 
-![](Assets/demo.gif)
+
+<a href="https://www.youtube.com/watch?v=MTY9m2--tiA&feature=youtu.be"><img align="right" src="Assets/demo.gif"></a>
+
+Create your Swift structure and let the UI be generated for you automatically
+```swift
+struct Calculation: AutomaticSettings {
+        var text = ""
+        var mode = Mode.linearRegression
+    }
+
+    // sourcery: injectFooter
+    struct Smoothing: AutomaticSettings {
+        var dayPeriod = 7
+        var algorithm = Algorithm.movingAverage
+
+        struct Grouped: AutomaticSettings {
+            // sourcery: range = 1...4
+            var level: Float = 1
+
+            var prettyCool = true
+        }
+
+        var grouped: Grouped = .init()
+    }
+
+```
+
+---
 
 [Watch overview demo on YouTube](https://www.youtube.com/watch?v=MTY9m2--tiA&feature=youtu.be)
 
