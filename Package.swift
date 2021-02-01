@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "AutomaticSettings",
     platforms: [
-            .macOS(.v10_14),
+            .macOS(.v10_15),
             .iOS(.v13)
     ],
     products: [
