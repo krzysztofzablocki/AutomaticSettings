@@ -149,6 +149,8 @@ public extension AutomaticSettingsViewDSL {
                     sideEffect: sideEffect
                 )
             )
+            .autocapitalization(.none)
+            .disableAutocorrection(true)
             .fixedSize()
         }
     }
@@ -173,6 +175,8 @@ public extension AutomaticSettingsViewDSL {
                     )
                 })
             )
+            .autocapitalization(.none)
+            .disableAutocorrection(true)
             .fixedSize()
         }
     }
@@ -197,6 +201,8 @@ public extension AutomaticSettingsViewDSL {
                     )
                 })
             )
+            .autocapitalization(.none)
+            .disableAutocorrection(true)
             .fixedSize()
         }
     }
