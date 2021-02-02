@@ -56,7 +56,7 @@ struct CalculationView<HeaderView: View, FooterView: View>: View, AutomaticSetti
 
   /// `Group` containing all Calculation views
   func settings() -> some View {
-    Group {
+    Section {
        Group { 
         setting(
           "text", 
@@ -122,7 +122,7 @@ struct SmoothingView<HeaderView: View, FooterView: View>: View, AutomaticSetting
 
   /// `Group` containing all Smoothing views
   func settings() -> some View {
-    Group {
+    Section {
        Group { 
         setting(
           "dayPeriod", 
@@ -138,7 +138,7 @@ struct SmoothingView<HeaderView: View, FooterView: View>: View, AutomaticSetting
           sideEffect: nil, 
           uniqueIdentifier: "\\.smoothing.algorithm"
         ) 
-        Section(header: Text("Grouped".settings_titleCase)) {
+        Section(header: Text("Grouped".automaticSettingsTitleCase)) {
           GroupedView(
             viewModel: self.viewModel
           )
@@ -193,7 +193,7 @@ struct GroupedView<HeaderView: View, FooterView: View>: View, AutomaticSettingsV
 
   /// `Group` containing all Grouped views
   func settings() -> some View {
-    Group {
+    Section {
        Group { 
         setting(
           "level", 
@@ -234,12 +234,12 @@ struct GroupedView<HeaderView: View, FooterView: View>: View, AutomaticSettingsV
     @ViewBuilder footerView: () -> FooterView
   ) -> some View {
     NavigationLink(
-      label.settings_titleCase, 
+      label.automaticSettingsTitleCase, 
       destination: 
         Form {
           CalculationView(viewModel: viewModel, headerView: headerView(), footerView: footerView())
         }
-        .navigationBarTitle("Calculation".settings_titleCase)
+        .navigationBarTitle("Calculation".automaticSettingsTitleCase)
       )
   }
 
@@ -248,12 +248,12 @@ struct GroupedView<HeaderView: View, FooterView: View>: View, AutomaticSettingsV
     @ViewBuilder headerView: () -> HeaderView
   ) -> some View {
     NavigationLink(
-      label.settings_titleCase, 
+      label.automaticSettingsTitleCase, 
       destination: 
         Form {
           CalculationView(viewModel: viewModel, headerView: headerView())
         }
-        .navigationBarTitle("Calculation".settings_titleCase)
+        .navigationBarTitle("Calculation".automaticSettingsTitleCase)
       )
   }
 
@@ -262,12 +262,24 @@ struct GroupedView<HeaderView: View, FooterView: View>: View, AutomaticSettingsV
     @ViewBuilder footerView: () -> FooterView
   ) -> some View {
     NavigationLink(
-      label.settings_titleCase, 
+      label.automaticSettingsTitleCase, 
       destination: 
         Form {
           CalculationView(viewModel: viewModel, footerView: footerView())
         }
-        .navigationBarTitle("Calculation".settings_titleCase)
+        .navigationBarTitle("Calculation".automaticSettingsTitleCase)
+      )
+  }
+  func calculationLink(
+    label: String = "Calculation"
+  ) -> some View {
+    NavigationLink(
+      label.automaticSettingsTitleCase,
+      destination:
+        Form {
+          CalculationView(viewModel: self.viewModel)
+        }
+        .navigationBarTitle("Calculation".automaticSettingsTitleCase)
       )
   }
 
@@ -275,7 +287,7 @@ struct GroupedView<HeaderView: View, FooterView: View>: View, AutomaticSettingsV
     label: String = "Smoothing"
   ) -> some View {
     NavigationLink(
-      label.settings_titleCase, 
+      label.automaticSettingsTitleCase, 
       destination: 
         Form {
           SmoothingView(
@@ -283,7 +295,7 @@ struct GroupedView<HeaderView: View, FooterView: View>: View, AutomaticSettingsV
              footerView: SettingsView.smoothingSectionFooter(self)() 
           )
         }
-        .navigationBarTitle("Smoothing".settings_titleCase)
+        .navigationBarTitle("Smoothing".automaticSettingsTitleCase)
       )
   }
 }

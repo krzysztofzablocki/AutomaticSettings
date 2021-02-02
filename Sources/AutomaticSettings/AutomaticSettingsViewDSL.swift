@@ -44,7 +44,7 @@ public extension AutomaticSettingsViewDSL {
         setting(
             name,
             keyPath: keyPath,
-            display: { $0.rawValue.settings_uppercasedFirst },
+            display: { $0.rawValue.automaticSettingsUppercasedFirst },
             allVariants: Array(Type.allCases),
             requiresRestart: requiresRestart,
             sideEffect: sideEffect,
@@ -60,7 +60,7 @@ public extension AutomaticSettingsViewDSL {
                 uniqueIdentifier: uniqueIdentifier,
                 sideEffect: sideEffect
             ),
-            label: Text(name.settings_titleCase).font(.body),
+            label: Text(name.automaticSettingsTitleCase).font(.body),
             content: {
                 ForEach(allVariants, id: \.self) { variant in
                     Text(display(variant))
@@ -76,7 +76,7 @@ public extension AutomaticSettingsViewDSL {
     @_disfavoredOverload
     func setting(_ name: String, keyPath: WritableKeyPath<Settings, Bool>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String) -> some View {
         Toggle(
-            name.settings_titleCase,
+            name.automaticSettingsTitleCase,
             isOn: viewModel.binding(
                 keyPath: keyPath,
                 requiresRestart: requiresRestart,
@@ -100,7 +100,7 @@ public extension AutomaticSettingsViewDSL {
                     in: range
                 )
             }
-            Text("\(name.settings_titleCase): \(viewModel.current[keyPath: keyPath])")
+            Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
         }
     }
 
@@ -117,7 +117,7 @@ public extension AutomaticSettingsViewDSL {
                     )
                 )
             }
-            Text("\(name.settings_titleCase): \(viewModel.current[keyPath: keyPath])")
+            Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
         }
     }
 
@@ -130,18 +130,18 @@ public extension AutomaticSettingsViewDSL {
             sideEffect: sideEffect
         )
         ) {
-            Text("\(name.settings_titleCase): \(viewModel.current[keyPath: keyPath])")
+            Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
         }
     }
 
     @_disfavoredOverload
     func setting(_ name: String, keyPath: WritableKeyPath<Settings, String>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String) -> some View {
         HStack {
-            Text(name.settings_titleCase)
+            Text(name.automaticSettingsTitleCase)
                 .fixedSize()
             Spacer()
             TextField(
-                name.settings_titleCase,
+                name.automaticSettingsTitleCase,
                 text: viewModel.binding(
                     keyPath: keyPath,
                     requiresRestart: requiresRestart,
@@ -158,11 +158,11 @@ public extension AutomaticSettingsViewDSL {
     @_disfavoredOverload
     func setting(_ name: String, keyPath: WritableKeyPath<Settings, String?>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String) -> some View {
         HStack {
-            Text(name.settings_titleCase)
+            Text(name.automaticSettingsTitleCase)
                 .fixedSize()
             Spacer()
             TextField(
-                name.settings_titleCase,
+                name.automaticSettingsTitleCase,
                 text: Binding(get: {
                     return self.viewModel.current[keyPath: keyPath] ?? ""
                 }, set: {
@@ -170,7 +170,7 @@ public extension AutomaticSettingsViewDSL {
                         keyPath: keyPath,
                         requiresRestart: requiresRestart,
                         uniqueIdentifier: uniqueIdentifier,
-                        to: $0,
+                        to: $0.automaticSettingsNilIfEmpty,
                         sideEffect: sideEffect
                     )
                 })
@@ -184,11 +184,11 @@ public extension AutomaticSettingsViewDSL {
     @_disfavoredOverload
     func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number?>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String) -> some View where Number: StringConvertibleNumber {
         HStack {
-            Text(name.settings_titleCase)
+            Text(name.automaticSettingsTitleCase)
                 .fixedSize()
             Spacer()
             TextField(
-                name.settings_titleCase,
+                name.automaticSettingsTitleCase,
                 text: Binding(get: {
                     return self.viewModel.current[keyPath: keyPath].map { "\($0)" } ?? ""
                 }, set: {
@@ -196,7 +196,7 @@ public extension AutomaticSettingsViewDSL {
                         keyPath: keyPath,
                         requiresRestart: requiresRestart,
                         uniqueIdentifier: uniqueIdentifier,
-                        to: Number($0),
+                        to: $0.automaticSettingsNilIfEmpty.flatMap { Number($0) },
                         sideEffect: sideEffect
                     )
                 })

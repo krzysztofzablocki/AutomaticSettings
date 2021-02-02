@@ -20,7 +20,7 @@ import {{import}}
       {% if forloop.counter0 == 39 %} } 
        Group { {% endif %}
        {% if variable.type.implements.AutomaticSettings %}
-        Section(header: Text("{{variable.type.localName}}".settings_titleCase)) {
+        Section(header: Text("{{variable.type.localName}}".automaticSettingsTitleCase)) {
           {{variable.type.localName}}View(
             viewModel: self.viewModel{% if variable.type.annotations.injectFooter or variable.type.annotations.injectHeader %},{% endif%}
             {% if variable.type.annotations.injectHeader %}headerView: {{variable.type.localName|lowerFirstLetter}}SectionHeader() {% if variable.type.annotations.injectFooter %},{% endif%}{% endif %}
@@ -127,7 +127,7 @@ struct {{type.localName}}View<HeaderView: View, FooterView: View>: View, Automat
     label: String = "{{type.localName|upperFirstLetter}}"
   ) -> some View {
     NavigationLink(
-      label.settings_titleCase, 
+      label.automaticSettingsTitleCase, 
       destination: 
         Form {
           {{type.localName}}View(
@@ -136,7 +136,7 @@ struct {{type.localName}}View<HeaderView: View, FooterView: View>: View, Automat
             {% if type.annotations.injectFooter %} footerView: {{type.parent.localName}}View.{{type.localName|lowerFirstLetter}}SectionFooter(self)() {% endif %}
           )
         }
-        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".automaticSettingsTitleCase)
       )
   }
 {% else %}
@@ -146,12 +146,12 @@ struct {{type.localName}}View<HeaderView: View, FooterView: View>: View, Automat
     @ViewBuilder footerView: () -> FooterView
   ) -> some View {
     NavigationLink(
-      label.settings_titleCase, 
+      label.automaticSettingsTitleCase, 
       destination: 
         Form {
           {{type.localName}}View(viewModel: viewModel, headerView: headerView(), footerView: footerView())
         }
-        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".automaticSettingsTitleCase)
       )
   }
 
@@ -160,12 +160,12 @@ struct {{type.localName}}View<HeaderView: View, FooterView: View>: View, Automat
     @ViewBuilder headerView: () -> HeaderView
   ) -> some View {
     NavigationLink(
-      label.settings_titleCase, 
+      label.automaticSettingsTitleCase, 
       destination: 
         Form {
           {{type.localName}}View(viewModel: viewModel, headerView: headerView())
         }
-        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".automaticSettingsTitleCase)
       )
   }
 
@@ -174,12 +174,12 @@ struct {{type.localName}}View<HeaderView: View, FooterView: View>: View, Automat
     @ViewBuilder footerView: () -> FooterView
   ) -> some View {
     NavigationLink(
-      label.settings_titleCase, 
+      label.automaticSettingsTitleCase, 
       destination: 
         Form {
           {{type.localName}}View(viewModel: viewModel, footerView: footerView())
         }
-        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".automaticSettingsTitleCase)
       )
   }
   
@@ -187,12 +187,12 @@ struct {{type.localName}}View<HeaderView: View, FooterView: View>: View, Automat
     label: String = "{{type.localName|upperFirstLetter}}"
   ) -> some View {
     NavigationLink(
-      label.settings_titleCase,
+      label.automaticSettingsTitleCase,
       destination:
         Form {
           {{type.localName}}View(viewModel: self.viewModel)
         }
-        .navigationBarTitle("{{type.localName|upperFirstLetter}}".settings_titleCase)
+        .navigationBarTitle("{{type.localName|upperFirstLetter}}".automaticSettingsTitleCase)
       )
   }
 {% endif %}
