@@ -23,7 +23,7 @@ struct Settings: AutomaticSettings {
         var algorithm = Algorithm.movingAverage
 
         struct Grouped: AutomaticSettings {
-            // sourcery: range = 1...4
+            // sourcery: range = 1...4, step = 0.5
             var level: Float = 1
 
             var prettyCool = true

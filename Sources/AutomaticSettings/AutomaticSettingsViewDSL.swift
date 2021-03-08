@@ -88,19 +88,89 @@ public extension AutomaticSettingsViewDSL {
 
     @_disfavoredOverload
     func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String, range: ClosedRange<Number>) -> some View where Number: BinaryFloatingPoint, Number.Stride: BinaryFloatingPoint, Number: _FormatSpecifiable {
-        VStack {
-            HStack {
-                Slider(
-                    value: viewModel.binding(
-                        keyPath: keyPath,
-                        requiresRestart: requiresRestart,
-                        uniqueIdentifier: uniqueIdentifier,
-                        sideEffect: sideEffect
-                    ),
-                    in: range
-                )
-            }
+        VStack(alignment: .leading) {
             Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
+            Slider(
+                value: viewModel.binding(
+                    keyPath: keyPath,
+                    requiresRestart: requiresRestart,
+                    uniqueIdentifier: uniqueIdentifier,
+                    sideEffect: sideEffect
+                ),
+                in: range,
+                minimumValueLabel: Text("\(Number(range.lowerBound))"),
+                maximumValueLabel: Text("\(Number(range.upperBound))"),
+                label: { EmptyView() }
+            )
+        }
+    }
+
+    @_disfavoredOverload
+    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String, range: ClosedRange<Number>, step: Number.Stride) -> some View where Number: BinaryFloatingPoint, Number.Stride: BinaryFloatingPoint, Number: _FormatSpecifiable {
+        VStack(alignment: .leading) {
+            Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
+            Slider(
+                value: viewModel.binding(
+                    keyPath: keyPath,
+                    requiresRestart: requiresRestart,
+                    uniqueIdentifier: uniqueIdentifier,
+                    sideEffect: sideEffect
+                ),
+                in: range,
+                step: step,
+                minimumValueLabel: Text("\(Number(range.lowerBound))"),
+                maximumValueLabel: Text("\(Number(range.upperBound))"),
+                label: { EmptyView() }
+            )
+        }
+    }
+
+    @_disfavoredOverload
+    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String, range: ClosedRange<Float>) -> some View where Number: FixedWidthInteger, Number: _FormatSpecifiable {
+        let binding = viewModel.binding(
+            keyPath: keyPath,
+            requiresRestart: requiresRestart,
+            uniqueIdentifier: uniqueIdentifier,
+            sideEffect: sideEffect
+        )
+
+        return VStack(alignment: .leading) {
+            Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
+            Slider(
+                value: Binding<Float>(
+                    get: { Float(binding.wrappedValue) },
+                    set: { binding.wrappedValue = Number($0) }
+                ),
+                in: range,
+                minimumValueLabel: Text("\(Number(range.lowerBound))"),
+                maximumValueLabel: Text("\(Number(range.upperBound))"),
+                label: { EmptyView() }
+            )
+        }
+    }
+
+    @_disfavoredOverload
+    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String, range: ClosedRange<Float>, step: Number) -> some View where Number: FixedWidthInteger, Number: _FormatSpecifiable {
+        let binding = viewModel.binding(
+            keyPath: keyPath,
+            requiresRestart: requiresRestart,
+            uniqueIdentifier: uniqueIdentifier,
+            sideEffect: sideEffect
+        )
+
+        return VStack(alignment: .leading) {
+            Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
+            Slider(
+                value: Binding<Float>(
+                    get: { Float(binding.wrappedValue) },
+                    set: { binding.wrappedValue = Number($0) }
+                ),
+                in: range,
+                step: Float(step),
+                minimumValueLabel: Text("\(Number(range.lowerBound))"),
+                maximumValueLabel: Text("\(Number(range.upperBound))"),
+                label: { EmptyView() }
+            )
         }
     }
 
