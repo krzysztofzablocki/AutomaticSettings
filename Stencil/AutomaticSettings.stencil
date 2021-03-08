@@ -33,8 +33,9 @@ import {{import}}
           keyPath: \{% call generateKeyPath type %}.{{variable.name}}, 
           requiresRestart: {% if variable.annotations.requiresRestart %}true{% else %}false{% endif %},
           sideEffect: {% if variable.annotations.sideEffect %} { {{variable.annotations.sideEffect }} } {% else %}nil{% endif %}, 
-          uniqueIdentifier: "\\{% call generateKeyPath type %}.{{variable.name}}"{% if variable.annotations.range and variable.type.name == "Float" %},
-          range: {{ variable.annotations.range }}
+          uniqueIdentifier: "\\{% call generateKeyPath type %}.{{variable.name}}"{% if variable.annotations.range and variable.type.name == "Float" or variable.annotations.range and variable.type.name == "Int" %},
+          range: {{ variable.annotations.range }}{% if variable.annotations.step and variable.type.name == "Float" or variable.annotations.step and variable.type.name == "Int" %},
+          step: {{ variable.annotations.step }}{% endif %}
         ) {% else %}
         ) {% endif %}
         {% endif %}

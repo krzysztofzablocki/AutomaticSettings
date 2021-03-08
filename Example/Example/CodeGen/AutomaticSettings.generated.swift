@@ -201,7 +201,8 @@ struct GroupedView<HeaderView: View, FooterView: View>: View, AutomaticSettingsV
           requiresRestart: false,
           sideEffect: nil, 
           uniqueIdentifier: "\\.smoothing.grouped.level",
-          range: 1...4
+          range: 1...4,
+          step: 0.5
         ) 
         setting(
           "prettyCool", 
