@@ -11,11 +11,17 @@ import SwiftUI
 /// - note: If you decide to auto-inject either header or footer then the codegen won't generate functions that would allow you to pass them manually to prevent developers from causing inconsistent behaviour
 public protocol AutomaticSettings: Codable, Equatable {}
 
+#if canImport(SwiftUICore)
+public typealias AutomaticSettingsFormatSpecifiable = SwiftUICore._FormatSpecifiable
+#else
+public typealias AutomaticSettingsFormatSpecifiable = _FormatSpecifiable
+#endif
+
 /// Enum type that's automatically supported by AutomaticSettings
 public protocol AutomaticSettingsEnum: RawRepresentable, Codable, Equatable, CaseIterable {}
 
 /// A Number type that can be converted from/to String, _FormatSpecifiable is required by SwiftUI Components dealing with numeric display
-public protocol StringConvertibleNumber: _FormatSpecifiable {
+public protocol StringConvertibleNumber: AutomaticSettingsFormatSpecifiable {
     init?(_ description: String)
 }
 

@@ -15,16 +15,7 @@ public protocol AutomaticSettingsViewDSL {
 
 public extension AutomaticSettingsViewDSL {
     func navigationLink<Content>(_ label: String, @ViewBuilder content: () -> Content) -> some View where Content: View {
-        #if os(OSX)
-        return NavigationLink(
-            label,
-            destination:
-            Form {
-                content()
-            }
-        )
-        #else
-        return NavigationLink(
+        NavigationLink(
             label,
             destination:
             Form {
@@ -32,8 +23,6 @@ public extension AutomaticSettingsViewDSL {
             }
             .navigationBarTitle(label)
         )
-        #endif
-        
     }
 
     // MARK: - Enums & Displayable
@@ -98,95 +87,25 @@ public extension AutomaticSettingsViewDSL {
     }
 
     @_disfavoredOverload
-    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String, range: ClosedRange<Number>) -> some View where Number: BinaryFloatingPoint, Number.Stride: BinaryFloatingPoint, Number: _FormatSpecifiable {
-        VStack(alignment: .leading) {
+    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String, range: ClosedRange<Number>) -> some View where Number: BinaryFloatingPoint, Number.Stride: BinaryFloatingPoint, Number: AutomaticSettingsFormatSpecifiable {
+        VStack {
+            HStack {
+                Slider(
+                    value: viewModel.binding(
+                        keyPath: keyPath,
+                        requiresRestart: requiresRestart,
+                        uniqueIdentifier: uniqueIdentifier,
+                        sideEffect: sideEffect
+                    ),
+                    in: range
+                )
+            }
             Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
-            Slider(
-                value: viewModel.binding(
-                    keyPath: keyPath,
-                    requiresRestart: requiresRestart,
-                    uniqueIdentifier: uniqueIdentifier,
-                    sideEffect: sideEffect
-                ),
-                in: range,
-                minimumValueLabel: Text("\(Number(range.lowerBound))"),
-                maximumValueLabel: Text("\(Number(range.upperBound))"),
-                label: { EmptyView() }
-            )
         }
     }
 
     @_disfavoredOverload
-    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String, range: ClosedRange<Number>, step: Number.Stride) -> some View where Number: BinaryFloatingPoint, Number.Stride: BinaryFloatingPoint, Number: _FormatSpecifiable {
-        VStack(alignment: .leading) {
-            Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
-            Slider(
-                value: viewModel.binding(
-                    keyPath: keyPath,
-                    requiresRestart: requiresRestart,
-                    uniqueIdentifier: uniqueIdentifier,
-                    sideEffect: sideEffect
-                ),
-                in: range,
-                step: step,
-                minimumValueLabel: Text("\(Number(range.lowerBound))"),
-                maximumValueLabel: Text("\(Number(range.upperBound))"),
-                label: { EmptyView() }
-            )
-        }
-    }
-
-    @_disfavoredOverload
-    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String, range: ClosedRange<Float>) -> some View where Number: FixedWidthInteger, Number: _FormatSpecifiable {
-        let binding = viewModel.binding(
-            keyPath: keyPath,
-            requiresRestart: requiresRestart,
-            uniqueIdentifier: uniqueIdentifier,
-            sideEffect: sideEffect
-        )
-
-        return VStack(alignment: .leading) {
-            Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
-            Slider(
-                value: Binding<Float>(
-                    get: { Float(binding.wrappedValue) },
-                    set: { binding.wrappedValue = Number($0) }
-                ),
-                in: range,
-                minimumValueLabel: Text("\(Number(range.lowerBound))"),
-                maximumValueLabel: Text("\(Number(range.upperBound))"),
-                label: { EmptyView() }
-            )
-        }
-    }
-
-    @_disfavoredOverload
-    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String, range: ClosedRange<Float>, step: Number) -> some View where Number: FixedWidthInteger, Number: _FormatSpecifiable {
-        let binding = viewModel.binding(
-            keyPath: keyPath,
-            requiresRestart: requiresRestart,
-            uniqueIdentifier: uniqueIdentifier,
-            sideEffect: sideEffect
-        )
-
-        return VStack(alignment: .leading) {
-            Text("\(name.automaticSettingsTitleCase): \(viewModel.current[keyPath: keyPath])")
-            Slider(
-                value: Binding<Float>(
-                    get: { Float(binding.wrappedValue) },
-                    set: { binding.wrappedValue = Number($0) }
-                ),
-                in: range,
-                step: Float(step),
-                minimumValueLabel: Text("\(Number(range.lowerBound))"),
-                maximumValueLabel: Text("\(Number(range.upperBound))"),
-                label: { EmptyView() }
-            )
-        }
-    }
-
-    @_disfavoredOverload
-    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String) -> some View where Number: BinaryFloatingPoint, Number.Stride: BinaryFloatingPoint, Number: _FormatSpecifiable {
+    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String) -> some View where Number: BinaryFloatingPoint, Number.Stride: BinaryFloatingPoint, Number: AutomaticSettingsFormatSpecifiable {
         VStack {
             HStack {
                 Slider(
@@ -203,7 +122,7 @@ public extension AutomaticSettingsViewDSL {
     }
 
     @_disfavoredOverload
-    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String) -> some View where Number: Strideable, Number: _FormatSpecifiable {
+    func setting<Number>(_ name: String, keyPath: WritableKeyPath<Settings, Number>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String) -> some View where Number: Strideable, Number: AutomaticSettingsFormatSpecifiable {
         Stepper(value: viewModel.binding(
             keyPath: keyPath,
             requiresRestart: requiresRestart,
@@ -217,25 +136,7 @@ public extension AutomaticSettingsViewDSL {
 
     @_disfavoredOverload
     func setting(_ name: String, keyPath: WritableKeyPath<Settings, String>, requiresRestart: Bool = false, sideEffect: (() -> Void)? = nil, uniqueIdentifier: String) -> some View {
-        #if os(OSX)
-        return HStack {
-            Text(name.automaticSettingsTitleCase)
-                .fixedSize()
-            Spacer()
-            TextField(
-                name.automaticSettingsTitleCase,
-                text: viewModel.binding(
-                    keyPath: keyPath,
-                    requiresRestart: requiresRestart,
-                    uniqueIdentifier: uniqueIdentifier,
-                    sideEffect: sideEffect
-                )
-            )
-            .disableAutocorrection(true)
-            .fixedSize()
-        }
-        #else
-        return HStack {
+        HStack {
             Text(name.automaticSettingsTitleCase)
                 .fixedSize()
             Spacer()
@@ -252,8 +153,6 @@ public extension AutomaticSettingsViewDSL {
             .disableAutocorrection(true)
             .fixedSize()
         }
-        #endif
-        
     }
 
     @_disfavoredOverload
@@ -262,24 +161,6 @@ public extension AutomaticSettingsViewDSL {
             Text(name.automaticSettingsTitleCase)
                 .fixedSize()
             Spacer()
-            #if os(OSX)
-            TextField(
-                name.automaticSettingsTitleCase,
-                text: Binding(get: {
-                    return self.viewModel.current[keyPath: keyPath] ?? ""
-                }, set: {
-                    self.viewModel.change(
-                        keyPath: keyPath,
-                        requiresRestart: requiresRestart,
-                        uniqueIdentifier: uniqueIdentifier,
-                        to: $0.automaticSettingsNilIfEmpty,
-                        sideEffect: sideEffect
-                    )
-                })
-            )
-            .disableAutocorrection(true)
-            .fixedSize()
-            #else
             TextField(
                 name.automaticSettingsTitleCase,
                 text: Binding(get: {
@@ -297,8 +178,6 @@ public extension AutomaticSettingsViewDSL {
             .autocapitalization(.none)
             .disableAutocorrection(true)
             .fixedSize()
-            #endif
-            
         }
     }
 
@@ -308,24 +187,6 @@ public extension AutomaticSettingsViewDSL {
             Text(name.automaticSettingsTitleCase)
                 .fixedSize()
             Spacer()
-            #if os(OSX)
-            TextField(
-                name.automaticSettingsTitleCase,
-                text: Binding(get: {
-                    return self.viewModel.current[keyPath: keyPath].map { "\($0)" } ?? ""
-                }, set: {
-                    self.viewModel.change(
-                        keyPath: keyPath,
-                        requiresRestart: requiresRestart,
-                        uniqueIdentifier: uniqueIdentifier,
-                        to: $0.automaticSettingsNilIfEmpty.flatMap { Number($0) },
-                        sideEffect: sideEffect
-                    )
-                })
-            )
-            .disableAutocorrection(true)
-            .fixedSize()
-            #else
             TextField(
                 name.automaticSettingsTitleCase,
                 text: Binding(get: {
@@ -343,8 +204,6 @@ public extension AutomaticSettingsViewDSL {
             .autocapitalization(.none)
             .disableAutocorrection(true)
             .fixedSize()
-            #endif
-            
         }
     }
 
@@ -358,12 +217,7 @@ public extension AutomaticSettingsViewDSL {
                 .font(.footnote)
                 .contextMenu {
                     Button("Copy") {
-                        #if os(OSX)
-                        NSPasteboard.general.setString(value, forType: .string)
-                        #else
                         UIPasteboard.general.string = value
-                        #endif
-                        
                     }
                 }
         }
