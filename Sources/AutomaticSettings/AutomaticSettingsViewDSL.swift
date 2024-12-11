@@ -18,10 +18,12 @@ public extension AutomaticSettingsViewDSL {
         NavigationLink(
             label,
             destination:
-            Form {
-                content()
-            }
-            .navigationBarTitle(label)
+                Form {
+                    content()
+                }
+            #if os(iOS)
+                .navigationBarTitle(label)
+            #endif
         )
     }
 
@@ -149,7 +151,9 @@ public extension AutomaticSettingsViewDSL {
                     sideEffect: sideEffect
                 )
             )
-            .autocapitalization(.none)
+#if os(iOS)
+            .textInputAutocapitalization(.none)
+#endif
             .disableAutocorrection(true)
             .fixedSize()
         }
@@ -175,7 +179,9 @@ public extension AutomaticSettingsViewDSL {
                     )
                 })
             )
-            .autocapitalization(.none)
+#if os(iOS)
+            .textInputAutocapitalization(.none)
+#endif
             .disableAutocorrection(true)
             .fixedSize()
         }
@@ -201,7 +207,9 @@ public extension AutomaticSettingsViewDSL {
                     )
                 })
             )
-            .autocapitalization(.none)
+#if os(iOS)
+            .textInputAutocapitalization(.none)
+#endif
             .disableAutocorrection(true)
             .fixedSize()
         }
@@ -217,7 +225,11 @@ public extension AutomaticSettingsViewDSL {
                 .font(.footnote)
                 .contextMenu {
                     Button("Copy") {
+#if os(iOS)
                         UIPasteboard.general.string = value
+#else
+                        NSPasteboard.general.setString(value, forType: .string)
+#endif
                     }
                 }
         }
